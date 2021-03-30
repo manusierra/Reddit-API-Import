@@ -1,17 +1,39 @@
-import React from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// Library for API import
+import axios from 'axios';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+function Reddit() {
+  const [posts, setPosts] = useState([]);
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  useEffect(() => {
+    axios.get(`https://www.reddit.com/r/reactjs.json`).then((res) => {
+      const newPosts = res.data.data.children.map((obj) => obj.data);
+      setPosts(newPosts);
+    });
+  }, []);
+
+  return (
+    <Fragment>
+      <div>
+        <h1>/re/reactjs</h1>
+        <ul>
+          {/* Posts iteration */}
+          {posts.map((posts) => (
+            <li key={posts.id}>
+              <h4>
+                <a href={posts.url} target="_blank" rel="noreferrer">
+                  {posts.title}
+                </a>
+              </h4>
+              Score: {posts.score}, Author: {posts.author_fullname}
+              <br />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Fragment>
+  );
+}
+
+ReactDOM.render(<Reddit />, document.getElementById('root'));
