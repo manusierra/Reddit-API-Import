@@ -6,6 +6,7 @@ import axios from 'axios';
 function Reddit() {
   const [posts, setPosts] = useState([]);
 
+  // The 2nd prop has to always be an empty array to avoid infinite loop.
   useEffect(() => {
     axios.get(`https://www.reddit.com/r/reactjs.json`).then((res) => {
       const newPosts = res.data.data.children.map((obj) => obj.data);
